@@ -1,1 +1,4 @@
-{"passwords_filename": "test.json", "key_filename": "key.key"}
+{
+    "passwords_filename": "password.json", 
+    "key_filename": "key.key"
+}
