@@ -4,7 +4,7 @@ Chopper is a python based password manager that lives on a detachable storage dr
 
 ## To Do
 
-- Encryption ✔
+- Encryption ✔✔
 - Portablility
 - Keys e.g. SSH
 - One time backup codes
