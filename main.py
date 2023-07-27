@@ -1,5 +1,19 @@
 from cryptography.fernet import Fernet
-import os, logging, json
+from time import sleep
+import os, logging, json 
+
+version = '1.0.0'
+
+def clear():
+ 
+    # for windows
+    if os.name == 'nt':
+        os.system('cls')
+ 
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        os.system('clear')
+
 
 logging.basicConfig(filename='main.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s - %(levelname)s : %(message)s')
 
@@ -69,11 +83,44 @@ if os.path.isfile(settings['passwords_filename']):
         pass_file.close()
     pass_json = fernet.decrypt(pass_json_encr)
     pass_json = json.loads(pass_json)
-    print(pass_json)
 else:
     print('No password file found.')
     question = input('Would you like to generate a password file now (y/N) : ').lower()
     if question == 'y':
         file_gen()
+def mainMenu():
+    
+    print(f'Chopper Ver : {version}')
+    inp = input('>')
+
+    inp = inp.split(' ')
+    cmd = inp[0]
+    inp.pop(0)
+
+    if cmd == 'help': helpCmd()
+    if cmd == 'clear': 
+        clear() 
+        mainMenu() 
+    if cmd == 'add': addCmd()
+    if cmd == 'show': showCmd()
+    if cmd == 'edit': editCmd()
 
 
+def helpCmd():
+    print('''
+    help - Shows this help dialog
+
+    clear - clears the screen
+                   
+    add - (add x y) x = name y = type (if none defult to password) - used to add new passwords and keys
+          
+    show - (show x) x = name - shows a prexisting password or key
+          
+    edit - (edit x) x = name - used to edit a prexisting password or key        
+''')
+    mainMenu()
+
+
+sleep(1)
+clear()
+mainMenu()
