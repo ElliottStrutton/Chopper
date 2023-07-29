@@ -77,17 +77,29 @@ else:
         key_file.close()
     fernet = Fernet(key)
 
-if os.path.isfile(settings['passwords_filename']):
-    with open(settings['passwords_filename'], 'rb') as pass_file:
-        pass_json_encr = pass_file.read()
+def readPasswordsFile():
+    if os.path.isfile(settings['passwords_filename']):
+        with open(settings['passwords_filename'], 'rb') as pass_file:
+            pass_json_encr = pass_file.read()
+            pass_file.close()
+        pass_json = fernet.decrypt(pass_json_encr)
+        pass_json = json.loads(pass_json)
+        return pass_json
+    else:
+        print('No password file found.')
+        question = input('Would you like to generate a password file now (y/N) : ').lower()
+        if question == 'y':
+            file_gen()
+
+
+def savePasswordsFile(pass_json):
+    pass_json = fernet.encrypt(bytes(json.dumps(pass_json, indent=4), encoding='utf-8'))
+    
+    with open(settings['passwords_filename'], 'wb') as pass_file:
+        pass_file.write(pass_json)
         pass_file.close()
-    pass_json = fernet.decrypt(pass_json_encr)
-    pass_json = json.loads(pass_json)
-else:
-    print('No password file found.')
-    question = input('Would you like to generate a password file now (y/N) : ').lower()
-    if question == 'y':
-        file_gen()
+
+
 def mainMenu():
     inp = input('>')
 
@@ -101,7 +113,8 @@ def mainMenu():
     if cmd == 'edit': editCmd()
     if cmd == 'exit': exitCmd()
     if cmd == 'clear': 
-        clear() 
+        clear()
+        mainMenu()
     if cmd != '':
         print(f"'{cmd}' is not a command use the 'help' command to se a list")
     mainMenu()
@@ -126,15 +139,16 @@ def helpCmd():
     mainMenu()
 
 def addCmd(type):
+    passwords_full_json = readPasswordsFile()
     if type == 'key': template_file = 'key.json'
     elif type == 'pass': template_file = 'password.json'
     else:
         print(f"'{type}' is not 'pass' or 'key'")
         mainMenu()
 
-    with open(f'templates/{template_file}', 'r+') as template_data:
+    with open(f'templates/{template_file}', 'r') as template_data:
         template = json.load(template_data)
-
+        template_data.close()
     
 
     if type == 'pass': 
@@ -144,11 +158,19 @@ def addCmd(type):
         password_json['username'] = input('Username : ')
         password_json['email'] = input('Email : ')
         password_json['password'] = input('Password : ')
-        password_json = template
-        print(password_json)
+        data_json = password_json
 
+    if type == 'key':
+        key_json = template
+        key_json['name'] = input('Name : ')
+        key_json['key'] = input('Key : ')
+        key_json['passphrase'] = input('Passphrase : ')
+        data_json = key_json
+        
+    passwords_full_json[data_json['name'].lower()] = data_json
+    print(passwords_full_json)
+    savePasswordsFile(passwords_full_json)
     mainMenu()
-
 
 sleep(1)
 clear()
