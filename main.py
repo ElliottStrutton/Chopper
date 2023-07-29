@@ -126,13 +126,29 @@ def helpCmd():
     mainMenu()
 
 def addCmd(type):
-    if type == 'key':
-        print(type)
-    elif type == 'pass':
-        print(type) 
+    if type == 'key': template_file = 'key.json'
+    elif type == 'pass': template_file = 'password.json'
     else:
         print(f"'{type}' is not 'pass' or 'key'")
+        mainMenu()
+
+    with open(f'templates/{template_file}', 'r+') as template_data:
+        template = json.load(template_data)
+
+    
+
+    if type == 'pass': 
+        password_json = template
+        password_json['name'] = input('Name : ')
+        password_json['url'] = input('URL : ')
+        password_json['username'] = input('Username : ')
+        password_json['email'] = input('Email : ')
+        password_json['password'] = input('Password : ')
+        password_json = template
+        print(password_json)
+
     mainMenu()
+
 
 sleep(1)
 clear()

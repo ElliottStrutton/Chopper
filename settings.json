@@ -1,4 +1,4 @@
 {
-    "passwords_filename": "password.json", 
+    "passwords_filename": "passwords.json", 
     "key_filename": "key.key"
 }
