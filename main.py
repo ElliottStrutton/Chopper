@@ -1,6 +1,6 @@
 from cryptography.fernet import Fernet
 from time import sleep
-import os, logging, json 
+import os, logging, json, sys
 
 version = '1.0.0'
 
@@ -89,8 +89,6 @@ else:
     if question == 'y':
         file_gen()
 def mainMenu():
-    
-    print(f'Chopper Ver : {version}')
     inp = input('>')
 
     inp = inp.split(' ')
@@ -98,13 +96,18 @@ def mainMenu():
     inp.pop(0)
 
     if cmd == 'help': helpCmd()
-    if cmd == 'clear': 
-        clear() 
-        mainMenu() 
-    if cmd == 'add': addCmd()
+    if cmd == 'add': addCmd(inp[0])
     if cmd == 'show': showCmd()
     if cmd == 'edit': editCmd()
+    if cmd == 'exit': exitCmd()
+    if cmd == 'clear': 
+        clear() 
+    if cmd != '':
+        print(f"'{cmd}' is not a command use the 'help' command to se a list")
+    mainMenu()
 
+def exitCmd():
+    sys. exit()
 
 def helpCmd():
     print('''
@@ -116,11 +119,22 @@ def helpCmd():
           
     show - (show x) x = name - shows a prexisting password or key
           
-    edit - (edit x) x = name - used to edit a prexisting password or key        
+    edit - (edit x) x = name - used to edit a prexisting password or key
+
+    exit - exits the program
 ''')
     mainMenu()
 
+def addCmd(type):
+    if type == 'key':
+        print(type)
+    elif type == 'pass':
+        print(type) 
+    else:
+        print(f"'{type}' is not 'pass' or 'key'")
+    mainMenu()
 
 sleep(1)
 clear()
+print(f'Chopper Ver : {version}')
 mainMenu()
