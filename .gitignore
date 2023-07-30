@@ -1,3 +1,4 @@
 key.key
 main.log
 passwords.json
+/venv/*
